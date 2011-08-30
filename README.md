@@ -4,6 +4,8 @@
 
 This pure javascript picture gallery provides you with a ready-to-use gallery, made of two components. A gallery of thumbnails, in which the user can quickly check pictures and a scrollable gallery of pictures, opened when the user touch one of the thumbnails. It works on both iOS and Android.
 
+![iphone](http://i55.tinypic.com/2uji7hk.png "iphones")
+
 This javascript library is still in beta. Feel free to report any issues, fork it, pull some request or make it fit your own needs!
 
 ## Use the library
