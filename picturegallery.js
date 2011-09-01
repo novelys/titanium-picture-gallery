@@ -19,6 +19,8 @@ var PictureGallery = {};
 	
 		/** Images (ImageView) displayed by the scrollable gallery. */
 		galleryImageViews = [],
+		
+		originalImages = [],
 	
 		/** Window managing the scrollable gallery */
 		galleryWindow = null,
@@ -168,41 +170,46 @@ var PictureGallery = {};
 		 * @returns {Object} new width and the new height.
 		 */
 		var reComputeImageSize = function(width, height) {
-	
+			
+			var newWidth = width, 
+				newHeight = height;
+					
 			/*
 			 * By working ratios of image sizes and screen sizes we ensure that, we will always
 			 * start resizing the dimension (height or width) overflowing the screen. Thus, the resized image will
 			 * always be contained by the screen boundaries.
 			 */
-			if (width / Ti.Platform.displayCaps.platformWidth >= height / Ti.Platform.displayCaps.platformHeight) {
-	
+			if ((width / Ti.Platform.displayCaps.platformWidth) >= (height / Ti.Platform.displayCaps.platformHeight)) {
+				Ti.API.info('Width: ' + width + ' Plateform-Width' + Ti.Platform.displayCaps.platformWidth);
+				Ti.API.info('Height: ' + height + ' Plateform-Height' + Ti.Platform.displayCaps.platformHeight);
 				if (width > Ti.Platform.displayCaps.platformWidth) {
-					height = (height * Ti.Platform.displayCaps.platformWidth) / width
-					width = Ti.Platform.displayCaps.platformWidth
+					newHeight = (height * Ti.Platform.displayCaps.platformWidth) / width;
+					newWidth = Ti.Platform.displayCaps.platformWidth;
 	
 				} else if (height > Ti.Platform.displayCaps.platformHeight) {
-					width = (width * Ti.Platform.displayCaps.platformHeight) / height
-					height = Ti.Platform.displayCaps.platformHeight
-	
+					newWidth = (width * Ti.Platform.displayCaps.platformHeight) / height;
+					newHeight = Ti.Platform.displayCaps.platformHeight;
 				}
 	
 			} else {
-	
+				Ti.API.info('Width: ' + width + ' Plateform-Width' + Ti.Platform.displayCaps.platformWidth);
+				Ti.API.info('Height: ' + height + ' Plateform-Height' + Ti.Platform.displayCaps.platformHeight);
 				if (height > Ti.Platform.displayCaps.platformHeight) {
-					width = (width * Ti.Platform.displayCaps.platformHeight) / height
-					height = Ti.Platform.displayCaps.platformHeight
+					newWidth = (width * Ti.Platform.displayCaps.platformHeight) / height
+					newHeight = Ti.Platform.displayCaps.platformHeight
 	
 				} else if (width > Ti.Platform.displayCaps.platformWidth) {
-					height = (height * Ti.Platform.displayCaps.platformWidth) / width
-					width = Ti.Platform.displayCaps.platformWidth
-	
+					newHeight = (height * Ti.Platform.displayCaps.platformWidth) / width
+					newWidth = Ti.Platform.displayCaps.platformWidth
 				}
 	
 			}
-	
+			
+			Ti.API.info(newWidth + 'x' + newHeight);
+			
 			return {
-				width : width,
-				height : height
+				width : newWidth,
+				height : newHeight
 			}
 	
 		}
@@ -252,19 +259,24 @@ var PictureGallery = {};
 			}
 		}
 		
-		
 		/**
 		 * Recompute image size on orientation change.
+		 */
+		var reComputeImageSizeOnChange = function(index) {
+			newSize = reComputeImageSize(dictionary.images[index].width, dictionary.images[index].height);
+
+			scrollableGalleryView.views[index].height = newSize.height;
+			scrollableGalleryView.views[index].width = newSize.width;
+		}
+		
+		/**
+		 * Recompute images size on orientation change.
 		 */
 		var reComputeImagesSizeOnChange = function() {
 	
 			// Iterating through gallery images.
 			for (var i = 0, length = dictionary.images.length; i < length; i++) {
-				newSize = reComputeImageSize(dictionary.images[i].width, dictionary.images[i].height);
-	
-				scrollableGalleryView.views[i].height = newSize.height;
-				scrollableGalleryView.views[i].width = newSize.width;
-	
+				reComputeImageSizeOnChange(i);
 			}
 			
 			if (dictionary.scrollableGallery.displayArrows) {
@@ -279,15 +291,15 @@ var PictureGallery = {};
 		 */
 		var createThumbGallery = function() {
 			thumbnailScrollView = Ti.UI.createScrollView({
+				top: 0,
+				
+				contentWidth: 'auto',
+				contentHeight: 'auto',
 	
-				contentWidth : 'auto',
-				contentHeight : 'auto',
-				top : 0,
-	
-				backgroundColor : dictionary.thumbGallery.backgroundColor,
-	
-				showVerticalScrollIndicator : true,
-				showHorizontalScrollIndicator : false
+				showVerticalScrollIndicator: true,
+				showHorizontalScrollIndicator: false,
+
+				backgroundColor: dictionary.thumbGallery.backgroundColor
 			});
 	
 			computeSizesforThumbGallery();
@@ -363,6 +375,7 @@ var PictureGallery = {};
 					galleryWindow.addEventListener('close', function() {
 						Ti.Gesture.removeEventListener('orientationchange', reComputeImagesSizeOnChange);
 					});
+					
 					if (dictionary.scrollableGallery.barColor !== 'undefined') {
 						galleryWindow.barColor = dictionary.scrollableGallery.barColor;
 					}
@@ -406,7 +419,8 @@ var PictureGallery = {};
 			galleryWindow.addEventListener('blur', function() {
 				if (isAndroidDevice)
 					Titanium.UI.iPhone.statusBarStyle = Titanium.UI.iPhone.StatusBar.DEFAULT
-			})
+			});
+			
 			scrollableGalleryView = Ti.UI.createScrollableView({
 	
 				top : 0,
@@ -421,24 +435,22 @@ var PictureGallery = {};
 	
 			// Create caption only when given by user.
 			var descriptionLabel = null;
-	
-			if (typeof dictionary.images[imageId].caption != 'undefined') {
-				descriptionLabel = Ti.UI.createLabel({
-	
-					text : dictionary.images[imageId].caption,
-	
-					bottom : '15dp',
-					height : 'auto',
-	
-					color : dictionary.scrollableGallery.labelColor,
-	
-					font : dictionary.scrollableGallery.labelFont,
-	
-					textAlign : 'center',
-	
-					zIndex : 2,
-				});
-			}
+
+			descriptionLabel = Ti.UI.createLabel({
+
+				text : dictionary.images[imageId].caption,
+
+				bottom : '15dp',
+				height : 'auto',
+
+				color : dictionary.scrollableGallery.labelColor,
+
+				font : dictionary.scrollableGallery.labelFont,
+
+				textAlign : 'center',
+
+				zIndex : 2,
+			});
 	
 			if (dictionary.scrollableGallery.displayArrows) {
 	
@@ -555,18 +567,18 @@ var PictureGallery = {};
 				for (var i = 0, b = dictionary.images.length; i < b; i++) {
 					tempImg = Ti.UI.createImageView({
 						image : dictionary.images[i].path,
-	
+
 						width : 'auto',
 						height : 'auto'
 					});
-	
+
 					// Hack on android to get image size.
 					// TODO: Find a better way...
 					var tempBlob = tempImg.toImage();
-	
+
 					dictionary.images[i].height = tempBlob.height
 					dictionary.images[i].width = tempBlob.width
-	
+
 					var view = Ti.UI.createImageView({
 						backgroundColor : '#000',
 						image : dictionary.images[i].path,
@@ -581,7 +593,7 @@ var PictureGallery = {};
 				}
 	
 				scrollableGalleryView.views = galleryImageViews;
-	
+				
 				reComputeImagesSizeOnChange();
 	
 				galleryWindow.add(scrollableGalleryView);
@@ -596,8 +608,28 @@ var PictureGallery = {};
 						image : dictionary.images[i].path,
 	
 						height : 'auto',
-						width : 'auto'
+						width : 'auto',
+						
+						index: i,
+						
+						firstLoad: true
 	
+					});
+					
+					view.addEventListener('load', function (e) {
+						var blob = e.source.toBlob();
+						originalImages[e.source.index] = blob;
+						
+						if (blob.height > 0 && blob.width > 0) {
+							dictionary.images[e.source.index].height = blob.height;
+							dictionary.images[e.source.index].width = blob.width;
+							
+							if (e.source.firstLoad) {
+								reComputeImageSizeOnChange(e.source.index);
+							}
+							
+							e.source.firstLoad = false;
+						}
 					});
 	
 					dictionary.images[i].height = view.size.height
@@ -609,8 +641,6 @@ var PictureGallery = {};
 				}
 	
 				scrollableGalleryView.views = galleryImageViews;
-	
-				reComputeImagesSizeOnChange();
 	
 				galleryWindow.add(scrollableGalleryView);
 			}
@@ -636,6 +666,10 @@ var PictureGallery = {};
 	
 				galleryWindow.title = e.currentPage + 1 + ' of ' + dictionary.images.length;
 				
+				if (typeof dictionary.images[e.currentPage].caption == 'undefined' || dictionary.images[e.currentPage].caption == 'undefined') {
+					dictionary.images[e.currentPage].caption = '';
+				}
+				Ti.API.info(dictionary.images[e.currentPage].caption);
 				if (descriptionLabel != null) {
 					descriptionLabel.text = dictionary.images[e.currentPage].caption;
 				}
