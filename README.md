@@ -143,9 +143,9 @@ On Android, the back button should work just fine. Be sure, however, to open the
       navigationGroup.open(pictureGallery)
     }
 
-## Author
+## Authors
 
-Pure Javascript Picture Gallery was made by [Novelys](www.novelys.com) (www.novelys.com). A small and agile software development team.
+Pure Javascript Picture Gallery was made by [Frédéric Maquin](http://www.fredericmaquin.com) from [Novelys](http://www.novelys.com) (www.novelys.com). A small and agile software development team.
 
 Feel free to contact us through our [website](http://www.novelys.com/contact) (http://www.novelys.com/contact)
 
