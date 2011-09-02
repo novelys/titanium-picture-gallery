@@ -4,7 +4,7 @@
 
 This pure javascript picture gallery provides you with a ready-to-use gallery, made of two components. A gallery of thumbnails, in which the user can quickly check pictures and a scrollable gallery of pictures, opened when the user touch one of the thumbnails. It works on both iOS and Android.
 
-![iphone](http://i55.tinypic.com/2uji7hk.png "iphones")
+![pictureGallery](http://i55.tinypic.com/2uji7hk.png "Titanium Picture Gallery")
 
 This javascript library is still in beta. Feel free to report any issues, fork it, pull some request or make it fit your own needs!
 
@@ -12,7 +12,9 @@ This javascript library is still in beta. Feel free to report any issues, fork i
 
 It is as simple as copy the javascript file along with the `images/` directory somewhere in your project and include the javascript file:
 
-    Ti.include('picturegallery.js');
+```javascript
+Ti.include('picturegallery.js');
+```
   
 Once included, the file will create a new namespace, named `PictureGallery`.
 
@@ -20,18 +22,20 @@ Once included, the file will create a new namespace, named `PictureGallery`.
 
 Here is a minimal example :
 
-    Ti.include('picturegallery.js');
+```javascript
+Ti.include('picturegallery.js');
 
-    var images = [{
-      path:'pathe/to/image', // /!\ To be changed
-    }];
+var images = [{
+  path:'pathe/to/image', // /!\ To be changed
+}];
 
-    var pictureGallery = PictureGallery.createWindow({
-      images: images,
-      title: 'Holiday pictures'
-    });
+var pictureGallery = PictureGallery.createWindow({
+  images: images,
+  title: 'Holiday pictures'
+});
 
-    pictureGallery.open();
+pictureGallery.open();
+```
   
 This will create a ready-to-use gallery, using built-in default values.
 
@@ -42,19 +46,21 @@ This will create a ready-to-use gallery, using built-in default values.
 The `images` property takes an array of dictionaries. Each dictionary contains three properties, with `path` being the only one mandatory.
 `caption` obviously holds the caption while the `thumbPath` property holds the optional thumbnail image. If `thumbPath` is missing, the library will stretch down the image given by `path`.
 
-    var images = [{
-      path:'images/images1.jpg',
-      thumbPath:'images/image1_thumb.jpg',
-      caption: 'My beautiful picture!'
-    }, {
-      path:'images/images2.jpg',
-      thumbPath:'images/image2_thumb.jpg',
-      caption: 'My other beautiful picture!'
-    }];
-    
-    var pictureGallery = PictureGallery.createWindow({
-      images: images
-    });
+```javascript
+var images = [{
+  path:'images/images1.jpg',
+  thumbPath:'images/image1_thumb.jpg',
+  caption: 'My beautiful picture!'
+}, {
+  path:'images/images2.jpg',
+  thumbPath:'images/image2_thumb.jpg',
+  caption: 'My other beautiful picture!'
+}];
+
+var pictureGallery = PictureGallery.createWindow({
+  images: images
+});
+```
 
 ### The thumbnail gallery
 
@@ -80,20 +86,22 @@ You should be aware of this extreme case: let's imagine you set the `thumbSize` 
 
 Example:
 
-    var pictureGallery = PictureGallery.createWindow({
-      images: images,
-      title: 'Holiday pictures',
-      
-      thumbGallery: {
-        numberOfColumnPortrait: 4,
-        numberOfColumnLandscape: 5,
-        thumbSize: 120,
-        thumbBorderColor: '#555',
-        thumbBorderWidth: 1,
-        thumbBackgroundColor: '#FFF',
-        backgroundColor: '#DDD'
-      }
-    });
+```javascript
+var pictureGallery = PictureGallery.createWindow({
+  images: images,
+  title: 'Holiday pictures',
+  
+  thumbGallery: {
+    numberOfColumnPortrait: 4,
+    numberOfColumnLandscape: 5,
+    thumbSize: 120,
+    thumbBorderColor: '#555',
+    thumbBorderWidth: 1,
+    thumbBackgroundColor: '#FFF',
+    backgroundColor: '#DDD'
+  }
+});
+```
 
 ### The scrollable gallery
 
@@ -112,18 +120,20 @@ You can custom as well the scrollable gallery by passing a dictionary to the `sc
 
 Example:
 
-    var pictureGallery = PictureGallery.createWindow({
-      images: images,
-      title: 'Holiday pictures',
-  
-      scrollableGallery: {
-        labelColor: 4,
-        labelFont: {fontSize : 18, fontWeight : 'bold'},
-        barColor: '#000',
-        displayArrows: true,
-        displayCaption: true
-      }
-    });
+```javascript
+var pictureGallery = PictureGallery.createWindow({
+  images: images,
+  title: 'Holiday pictures',
+
+  scrollableGallery: {
+    labelColor: 4,
+    labelFont: {fontSize : 18, fontWeight : 'bold'},
+    barColor: '#000',
+    displayArrows: true,
+    displayCaption: true
+  }
+});
+```
 
 ### One more little thing in practice
 
@@ -131,21 +141,23 @@ On iPhone, the library will create its own `NavigationGroup`, to display a navig
 
 On Android, the back button should work just fine. Be sure, however, to open the PictureGallery window as a heavyweight one.
 
-    var pictureGallery = PictureGallery.createWindow({
-      images: images,
-      title: 'Holiday pictures',
-      windowGroup: navigationGroup
-    });
-    
-    if (Ti.platform.osname == 'android') {
-      pictureGallery.open({navBarHidden: true})
-    } else if (Ti.platform.osname == 'iphone'){
-      navigationGroup.open(pictureGallery)
-    }
+```javascript
+var pictureGallery = PictureGallery.createWindow({
+  images: images,
+  title: 'Holiday pictures',
+  windowGroup: navigationGroup
+});
+
+if (Ti.platform.osname == 'android') {
+  pictureGallery.open({navBarHidden: true})
+} else if (Ti.platform.osname == 'iphone'){
+  navigationGroup.open(pictureGallery)
+}
+```
 
 ## Authors
 
-Pure Javascript Picture Gallery was made by [Frédéric Maquin](http://www.fredericmaquin.com) from [Novelys](http://www.novelys.com) (www.novelys.com). A small and agile software development team.
+Pure Javascript Picture Gallery was made by [Frédéric Maquin](http://www.fredericmaquin.com) from [Novelys](http://www.novelys.com) (http://www.novelys.com). A small and agile software development team.
 
 Feel free to contact us through our [website](http://www.novelys.com/contact) (http://www.novelys.com/contact)
 
