@@ -117,6 +117,7 @@ You can custom as well the scrollable gallery by passing a dictionary to the `sc
 
 * `displayArrows` **Boolean** wether or not display left and right arrow for navigation (false by default);
 * `displayCaption` **Boolean** wether or not display the caption;
+* `i18nOfKey` **String** the key for translating the word 'of' into any language, like 'X of N', using Titanium built-in i18n mechanism.
 
 Example:
 

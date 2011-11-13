@@ -103,6 +103,8 @@ var PictureGallery = {};
 	
 		dictionary.scrollableGallery.displayArrows = ( typeof dictionary.scrollableGallery.displayArrows == 'undefined') ? false : dictionary.scrollableGallery.displayArrows;
 		dictionary.scrollableGallery.displayCaption = ( typeof dictionary.scrollableGallery.displayCaption == 'undefined') ? true : dictionary.scrollableGallery.displayCaption;
+		
+		dictionary.scrollableGallery.i18nOfKey = ( typeof dictionary.scrollableGallery.i18nOfKey == 'undefined') ? ' of ' : dictionary.scrollableGallery.i18nOfKey;
 	
 		dictionary.title = ( typeof dictionary.title == 'undefined') ? 'Gallery' : dictionary.title;
 	
@@ -180,8 +182,7 @@ var PictureGallery = {};
 			 * always be contained by the screen boundaries.
 			 */
 			if ((width / Ti.Platform.displayCaps.platformWidth) >= (height / Ti.Platform.displayCaps.platformHeight)) {
-				Ti.API.info('Width: ' + width + ' Plateform-Width' + Ti.Platform.displayCaps.platformWidth);
-				Ti.API.info('Height: ' + height + ' Plateform-Height' + Ti.Platform.displayCaps.platformHeight);
+
 				if (width > Ti.Platform.displayCaps.platformWidth) {
 					newHeight = (height * Ti.Platform.displayCaps.platformWidth) / width;
 					newWidth = Ti.Platform.displayCaps.platformWidth;
@@ -192,8 +193,7 @@ var PictureGallery = {};
 				}
 	
 			} else {
-				Ti.API.info('Width: ' + width + ' Plateform-Width' + Ti.Platform.displayCaps.platformWidth);
-				Ti.API.info('Height: ' + height + ' Plateform-Height' + Ti.Platform.displayCaps.platformHeight);
+
 				if (height > Ti.Platform.displayCaps.platformHeight) {
 					newWidth = (width * Ti.Platform.displayCaps.platformHeight) / height
 					newHeight = Ti.Platform.displayCaps.platformHeight
@@ -204,8 +204,6 @@ var PictureGallery = {};
 				}
 	
 			}
-			
-			Ti.API.info(newWidth + 'x' + newHeight);
 			
 			return {
 				width : newWidth,
@@ -364,7 +362,7 @@ var PictureGallery = {};
 				thumbImageBorder.addEventListener('click', function(e) {
 					galleryWindow = Ti.UI.createWindow({
 						backgroundColor : '#000',
-						title : (e.source.imageId + 1) + ' of ' + dictionary.images.length,
+						title : (e.source.imageId + 1) + L(dictionary.scrollableGallery.i18nOfKey, ' of ') + dictionary.images.length,
 						translucent : true
 					});
 	
@@ -664,12 +662,12 @@ var PictureGallery = {};
 	
 			scrollableGalleryView.addEventListener('scroll', function(e) {
 	
-				galleryWindow.title = e.currentPage + 1 + ' of ' + dictionary.images.length;
+				galleryWindow.title = e.currentPage + 1 + L(dictionary.scrollableGallery.i18nOfKey, ' of ') + dictionary.images.length;
 				
 				if (typeof dictionary.images[e.currentPage].caption == 'undefined' || dictionary.images[e.currentPage].caption == 'undefined') {
 					dictionary.images[e.currentPage].caption = '';
 				}
-				Ti.API.info(dictionary.images[e.currentPage].caption);
+
 				if (descriptionLabel != null) {
 					descriptionLabel.text = dictionary.images[e.currentPage].caption;
 				}
