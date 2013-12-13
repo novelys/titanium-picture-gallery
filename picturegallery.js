@@ -116,7 +116,7 @@ var PictureGallery = {};
 		 * @return {Boolean} true ifthe platform is an Android one, false otherwise.
 		 */
 		var isAndroidDevice = function() {
-			return (Ti.Platform.name === 'android')
+			return (Ti.Platform.name === 'android');
 		};
 		
 		/**
