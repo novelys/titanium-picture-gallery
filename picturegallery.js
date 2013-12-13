@@ -119,98 +119,98 @@ var PictureGallery = {};
 			return (Ti.Platform.name === 'android')
 		};
 		
-		/**
-		 * Recompute the size of thumbnails in gallery.
-		 */
-		var computeSizesforThumbGallery = function() {
-			numberOfColumn = dictionary.thumbGallery.numberOfColumn;
+	        /**
+	         * Recompute the size of thumbnails in gallery.
+	         */
+	        var computeSizesforThumbGallery = function() {
+	            numberOfColumn = dictionary.thumbGallery.numberOfColumn;
+	    
+	            if (Ti.Platform.displayCaps.platformWidth > Ti.Platform.displayCaps.platformHeight) {// Landscape
+	                numberOfColumn = dictionary.thumbGallery.numberOfColumnLandscape;
+	            } else {
+	                numberOfColumn = dictionary.thumbGallery.numberOfColumnPortrait;
+	            }
+	    
+	            if (dictionary.thumbGallery.thumbSize === 0) {
+	                // No size specified, use padding (or default padding)
+	                // to create thumbnail size.
+	                thumbPadding = (dictionary.thumbGallery.thumbPadding);
+	                thumbSize = ((Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor) - ((numberOfColumn + 1) * thumbPadding)) / numberOfColumn;
+	            } else {
+	                var thumbsizeDpi;
+	    
+	                if (dictionary.thumbGallery.forceRealPixelSize) {
+	                    // force size in pixel rather than 'density pixels'
+	                    thumbsizeDpi = dictionary.thumbGallery.thumbSize;
+	                } else {
+	                    thumbsizeDpi = dictionary.thumbGallery.thumbSize * dpi;
+	                }
+	    
+	                if ((thumbsizeDpi * numberOfColumn) > (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) {
+	                    // ifvalues specified are incoherent (i. e. overlap screen), reduce values
+	                    // to get in the screen boundaries.
+	                    thumbSize = thumbsizeDpi - (numberOfColumn * 1) -
+	                        ((thumbsizeDpi * numberOfColumn - (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) / numberOfColumn);
+	                } else {
+	                    thumbSize = thumbsizeDpi;
+	                }
+	    
+	                // Compute padding.
+	                thumbPadding = ((Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor) - (numberOfColumn * thumbSize)) / (numberOfColumn + 1);
+	            }
+	    
+	        };
+	        
+	        /**
+	         * Recompute the size of a given image size, in order to make it fit
+	         * into the screen.
+	         *
+	         * @param {Number} width
+	         *
+	         * @param {Number} height
+	         *
+	         * @returns {Object} new width and the new height.
+	         */
+	        var reComputeImageSize = function(width, height) {
+	            
+	            var newWidth = width, 
+	                newHeight = height;
+	                    
+	            /*
+	             * By working ratios of image sizes and screen sizes we ensure that, we will always
+	             * start resizing the dimension (height or width) overflowing the screen. Thus, the resized image will
+	             * always be contained by the screen boundaries.
+	             */
+	            if ((width / (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) >= (height / (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor))) {
 	
-			if (Ti.Platform.displayCaps.platformWidth > Ti.Platform.displayCaps.platformHeight) {// Landscape
-				numberOfColumn = dictionary.thumbGallery.numberOfColumnLandscape;
-			} else {
-				numberOfColumn = dictionary.thumbGallery.numberOfColumnPortrait;
-			}
+	                if (width > (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) {
+	                    newHeight = (height * (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) / width;
+	                    newWidth = (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor);
+	    
+	                } else if (height > (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor)) {
+	                    newWidth = (width * (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor)) / height;
+	                    newHeight = (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor);
+	                }
+	    
+	            } else {
 	
-			if (dictionary.thumbGallery.thumbSize === 0) {
-				// No size specified, use padding (or default padding)
-				// to create thumbnail size.
-				thumbPadding = (dictionary.thumbGallery.thumbPadding);
-				thumbSize = (Ti.Platform.displayCaps.platformWidth - ((numberOfColumn + 1) * thumbPadding)) / numberOfColumn;
-			} else {
-				var thumbsizeDpi;
-	
-				if (dictionary.thumbGallery.forceRealPixelSize) {
-					// force size in pixel rather than 'density pixels'
-					thumbsizeDpi = dictionary.thumbGallery.thumbSize;
-				} else {
-					thumbsizeDpi = dictionary.thumbGallery.thumbSize * dpi;
-				}
-	
-				if ((thumbsizeDpi * numberOfColumn) > Ti.Platform.displayCaps.platformWidth) {
-					// ifvalues specified are incoherent (i. e. overlap screen), reduce values
-					// to get in the screen boundaries.
-					thumbSize = thumbsizeDpi - (numberOfColumn * 1) -
-						((thumbsizeDpi * numberOfColumn - Ti.Platform.displayCaps.platformWidth) / numberOfColumn);
-				} else {
-					thumbSize = thumbsizeDpi;
-				}
-	
-				// Compute padding.
-				thumbPadding = (Ti.Platform.displayCaps.platformWidth - (numberOfColumn * thumbSize)) / (numberOfColumn + 1);
-			}
-	
-		}
-		
-		/**
-		 * Recompute the size of a given image size, in order to make it fit
-		 * into the screen.
-		 *
-		 * @param {Number} width
-		 *
-		 * @param {Number} height
-		 *
-		 * @returns {Object} new width and the new height.
-		 */
-		var reComputeImageSize = function(width, height) {
-			
-			var newWidth = width, 
-				newHeight = height;
-					
-			/*
-			 * By working ratios of image sizes and screen sizes we ensure that, we will always
-			 * start resizing the dimension (height or width) overflowing the screen. Thus, the resized image will
-			 * always be contained by the screen boundaries.
-			 */
-			if ((width / Ti.Platform.displayCaps.platformWidth) >= (height / Ti.Platform.displayCaps.platformHeight)) {
-
-				if (width > Ti.Platform.displayCaps.platformWidth) {
-					newHeight = (height * Ti.Platform.displayCaps.platformWidth) / width;
-					newWidth = Ti.Platform.displayCaps.platformWidth;
-	
-				} else if (height > Ti.Platform.displayCaps.platformHeight) {
-					newWidth = (width * Ti.Platform.displayCaps.platformHeight) / height;
-					newHeight = Ti.Platform.displayCaps.platformHeight;
-				}
-	
-			} else {
-
-				if (height > Ti.Platform.displayCaps.platformHeight) {
-					newWidth = (width * Ti.Platform.displayCaps.platformHeight) / height
-					newHeight = Ti.Platform.displayCaps.platformHeight
-	
-				} else if (width > Ti.Platform.displayCaps.platformWidth) {
-					newHeight = (height * Ti.Platform.displayCaps.platformWidth) / width
-					newWidth = Ti.Platform.displayCaps.platformWidth
-				}
-	
-			}
-			
-			return {
-				width : newWidth,
-				height : newHeight
-			}
-	
-		}
+	                if (height > (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor)) {
+	                    newWidth = (width * (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor)) / height;
+	                    newHeight = (Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor);
+	    
+	                } else if (width > (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) {
+	                    newHeight = (height * (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor)) / width;
+	                    newWidth = (Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor);
+	                }
+	    
+	            }
+	            
+	            return {
+	                width : newWidth,
+	                height : newHeight
+	            };
+	    
+	        };
 		
 		/**
 		 * Recompute thumbnails size on orientation change.
