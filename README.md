@@ -4,37 +4,35 @@
 
 This pure javascript picture gallery provides you with a ready-to-use gallery, made of two components. A gallery of thumbnails, in which the user can quickly check pictures and a scrollable gallery of pictures, opened when the user touch one of the thumbnails. It works on both iOS and Android.
 
-![pictureGallery](http://i55.tinypic.com/2uji7hk.png "Titanium Picture Gallery")
-
 This javascript library is still in beta. Feel free to report any issues, fork it, pull some request or make it fit your own needs!
 
 ## Use the library
 
-It is as simple as copy the javascript file along with the `images/` directory somewhere in your project and include the javascript file:
+It is as simple as copy the javascript file along with the `images/` directory somewhere in your project and ~~include the javascript file~~ require the CommonJS module:
 
 ```javascript
-Ti.include('picturegallery.js');
+var pictureGallery = require('picturegallery');
 ```
   
-Once included, the file will create a new namespace, named `PictureGallery`.
+~~Once included, the file will create a new namespace, named `PictureGallery`.~~
 
 ## Usage
 
 Here is a minimal example :
 
 ```javascript
-Ti.include('picturegallery.js');
+var pictureGallery = require('picturegallery');
 
 var images = [{
   path:'pathe/to/image', // /!\ To be changed
 }];
 
-var pictureGallery = PictureGallery.createWindow({
+var galleryWindow = pictureGallery.createWindow({
   images: images,
   title: 'Holiday pictures'
 });
 
-pictureGallery.open();
+galleryWindow.open();
 ```
   
 This will create a ready-to-use gallery, using built-in default values.
@@ -87,7 +85,7 @@ You should be aware of this extreme case: let's imagine you set the `thumbSize` 
 Example:
 
 ```javascript
-var pictureGallery = PictureGallery.createWindow({
+var galleryWindow = pictureGallery.createWindow({
   images: images,
   title: 'Holiday pictures',
   
